@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# IDE
+.vscode/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+.ipynb_checkpoints
+__pycache__

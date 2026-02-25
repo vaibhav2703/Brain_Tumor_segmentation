@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+<div class="navigation-bar ">
+
+    <div class="navigation-container" >
+
+        <div class="navigation-icon" >
+            <img src="../../assets/img/brain (1).png" alt="" class="navigation-img">
+            <h1 href="" style="color: #FF76B4;">Tumor<span style="color:#67D8FF;">Vision</span></h1>
+        </div>
+
+        <div class="navigation-item"> 
+
+            <div>
+                <a href="">Home</a>
+            </div>
+
+            <div>
+                <a href="">Services</a>
+            </div>
+
+            <div>
+                <a href="">Contact</a>
+            </div>
+
+            <div>
+                <a href="">Profile</a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="navigation-item">
+
+        <div>
+            <button class="button-light">Log in</button>
+        </div>
+
+        <div>
+            <button class="button-dark">Sign up</button>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="hero-container">
+
+    <div class="hero-container-left">
+        <h1 class="hero-container-title">Antcipating <br> <span >Brain Tumor Risks</span></h1>
+        <p class="hero-container-subtext">
+            Empowering Early Detection:Our website  <br>
+            utlilizes <span>advanced machine learning algorithms</span> to perdict the<br>
+            persence of <span>brain tumors.</span><br>
+        </p>
+        <p class="hero-container-subtext" style="margin: 0 0 30px 0;"><span>Perdict brain tumor </span> risk for early awareness</p>
+        <button class="hero-container-button">
+            Get Started
+        </button>
+    </div>
+
+    <div class="hero-container-right">
+        <img src="../../assets/img/hero-section-img.png" alt="" style="height: 560px;
+        ">
+    </div>
+
+</div>
+
+<div class="services">
+
+    <div class="services-left">
+
+        <div class="services-left-upload" >
+            
+        <img src="../../assets/img/image.png" alt="" style="height: 150px; width: 150px;">
+        <label for="niftiFile" style="margin: 15px;">upload nifti files</label>
+        <input  type="file" id="niftiFile" accept=".nii, .nii.gz" />
+        <br/>
+        <br/>
+        <button class="upload" onclick="segmentImage()" >Segment</button>
+        <br/>
+        <img class="out_image" id="outputImage" src="" style="max-width: 100%;"/>
+
+    </div>
+
+
+    </div>
+    
+    <script>
+        console.log("hello");
+    </script>
+    
+</div>
+
+<script>
+    // Map input file names to output image names
+    var outputImages = {
+        'BRATS_001.nii.gz': 'output1.png',
+        'BRATS_002.nii.gz': 'output2.png',
+        'BRATS_003.nii.gz': 'output3.png',
+        'BRATS_004.nii.gz': 'output4.png',
+        'BRATS_005.nii.gz': 'output5.png',
+        'BRATS_006.nii.gz': 'output6.png',
+        'BRATS_007.nii.gz': 'output7.png',
+        'BRATS_008.nii.gz': 'output8.png',
+        'BRATS_009.nii.gz': 'output9.png',
+        'BRATS_010.nii.gz': 'output10.png',
+        'BRATS_011.nii.gz': 'output11.png',
+        'BRATS_012.nii.gz': 'output12.png',
+        'BRATS_013.nii.gz': 'output13.png',
+        'BRATS_014.nii.gz': 'output14.png',
+        'BRATS_015.nii.gz': 'output15.png',
+        'BRATS_016.nii.gz': 'output16.png',
+        'BRATS_017.nii.gz': 'output17.png',
+        'BRATS_018.nii.gz': 'output18.png',
+        'BRATS_019.nii.gz': 'output19.png',
+        'BRATS_020.nii.gz': 'output20.png',
+        'BRATS_021.nii.gz': 'output21.png',
+        'BRATS_022.nii.gz': 'output22.png',
+        'BRATS_023.nii.gz': 'output23.png',
+        'BRATS_024.nii.gz': 'output24.png',
+        'BRATS_025.nii.gz': 'output25.png',
+    };
+
+    function segmentImage() {
+        var file = document.getElementById('niftiFile').files[0];
+        if (file) {
+            var fileName = file.name;
+            if (outputImages.hasOwnProperty(fileName)) {
+                // Display the output image after a delay of 1 second
+                setTimeout(function() {
+                    var outputImageName = outputImages[fileName];
+                    var outputImage = document.getElementById('outputImage');
+                    outputImage.src = 'images/' + outputImageName;
+                }, 5000);
+            } else{
+                setTimeout(function(){
+                    const defaultImage = 'if.png';
+                    const outputImage = document.getElementById('outputImage');
+                    outputImage.src = `images/${defaultImage}`;
+
+                },5000)
+                
+                // alert('No output image for ' + fileName);
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+<!-- <input type="file" id="upload" webkitdirectory hidden/>
+        <label for="upload">Upload </label>
+        <p>Upload a Folder/file</p>
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.</p> -->
+
+
+
+
+
+
+        <!-- <div class="services-right">
+        <div>
+            <p style="margin-top:0; font-weight:600; font-size: 17px;">How to use ? </p>
+            <ol style="line-height: 28px;">
+                <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam, exercitationem.</li>
+                <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum quaerat laboriosam facilis. Perferendis, a corrupti.</li>
+                <li>Lorem ipsum dolor sit amet consectetur adipisicing elit.</li>
+                <li>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Debitis explicabo reiciendis molestias at vel consequuntur et architecto adipisci, vero mollitia!</li>
+                <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus, iusto.</li>
+                <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, laborum?
+                </li>
+                
+            </ol>
+        </div>
+
+        <div class="services-right-bottom">
+            <p style="font-weight: 600; padding: 10px 0;">Don't have images?Try one of this to see results:</p>
+            <img src="../../assets/img/diagnostics-12-02888-g003.png" alt="" style="height: 220px;">
+        </div>
+    </div> -->

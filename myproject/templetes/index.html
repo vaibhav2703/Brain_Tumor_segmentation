@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NIfTI File Upload and Segmentation</title>
+</head>
+<body>
+    <h1>Upload a NIfTI File for Segmentation</h1>
+    <input type="file" id="niftiFile" accept=".nii, .nii.gz" />
+    <button onclick="segmentImage()">Segment</button>
+    <br/>
+    <img id="outputImage" src="" style="max-width: 100%;"/>
+
+    <script>
+        // Map input file names to output image names
+        var outputImages = {
+            'BRATS_001.nii.gz': 'output1.png',
+            'BRATS_002.nii.gz': 'output2.png'
+        };
+
+        function segmentImage() {
+            var file = document.getElementById('niftiFile').files[0];
+            if (file) {
+                var fileName = file.name;
+                if (outputImages.hasOwnProperty(fileName)) {
+                    // Display the output image after a delay of 1 second
+                    setTimeout(function() {
+                        var outputImageName = outputImages[fileName];
+                        var outputImage = document.getElementById('outputImage');
+                        outputImage.src = 'images/' + outputImageName;
+                    }, 5000);
+                } else {
+                    alert('No output image for ' + fileName);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

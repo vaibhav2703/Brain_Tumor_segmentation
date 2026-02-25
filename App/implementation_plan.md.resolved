@@ -1,0 +1,80 @@
+# Brain Tumor Segmentation — Inference Pipeline
+
+Build a working Flask web app that loads the trained [best_metric_model.pth](file:///d:/Brain_Tumor_Segmentation/App/best_metric_model.pth) UNet model, accepts a NIfTI (`.nii.gz`) brain MRI upload, runs inference, and returns segmentation visualizations.
+
+## Key Findings from Codebase Analysis
+
+| Item | Detail |
+|---|---|
+| **Model** | MONAI 3D `UNet` — `in_channels=4`, `out_channels=3` (TC, WT, ET) |
+| **Architecture** | `channels=(16, 32, 64, 128, 256)`, `strides=(2, 2, 2, 2)`, `num_res_units=2` |
+| **Input format** | 4-channel 3D NIfTI (`.nii.gz`) — 4 MRI modalities stacked |
+| **Preprocessing** | `LoadImage → EnsureChannelFirst → Spacing(1,1,1) → ScaleIntensity → CropForeground → Resize(128,128,155) → ToTensor` |
+| **Inference** | `sliding_window_inference` with sigmoid activation + threshold 0.5 |
+| **Existing app.py** | Uses `monai.deploy.TorchModel` which is incorrect; needs full rewrite |
+
+> [!IMPORTANT]
+> The model expects **4-channel** NIfTI input (T1, T1ce, T2, FLAIR modalities). Users must upload a single `.nii.gz` file that already has 4 modalities, OR we accept 4 separate files. The plan below accepts a **single 4-channel `.nii.gz` file** for simplicity.
+
+## Proposed Changes
+
+### Inference Utility Module
+
+#### [MODIFY] [utils.py](file:///d:/Brain_Tumor_Segmentation/App/utils.py)
+
+Complete rewrite to provide a clean inference API:
+
+1. **`load_model(model_path)`** — Instantiates UNet with the exact training architecture, loads `state_dict`, sets `eval()` mode, returns model + device.
+2. **`get_inference_transforms()`** — Returns a `Compose` pipeline matching the training preprocessing (without labels): `LoadImage → EnsureChannelFirst → Spacing(1.5, 1.5, 2.0) → ScaleIntensityRange(233, 1010.6) → CropForeground → Resize(128, 128, 155) → ToTensor`.
+3. **`run_inference(model, device, image_path)`** — Loads + transforms the image, runs `sliding_window_inference`, applies sigmoid + threshold, returns the 3-channel binary segmentation tensor.
+4. **`create_visualization(image_tensor, seg_tensor)`** — Picks a representative axial slice from the middle of the volume, creates a matplotlib figure with the original image and overlay of the 3 tumor sub-regions (TC=red, WT=green, ET=blue), saves to a temp PNG, and returns the path.
+
+---
+
+### Flask Web Application
+
+#### [MODIFY] [app.py](file:///d:/Brain_Tumor_Segmentation/App/app.py)
+
+Rewrite the Flask app:
+
+1. On startup: call `load_model()` once and cache the model in memory.
+2. **`GET /`** — Serve the upload page.
+3. **`POST /predict`** — Accept `.nii.gz` upload, save to temp dir, call `run_inference()`, call `create_visualization()`, return the result page with the segmentation images.
+4. **`GET /result`** — Display the segmentation results.
+
+---
+
+### Frontend UI
+
+#### [MODIFY] [index.html](file:///d:/Brain_Tumor_Segmentation/App/templates/index.html)
+
+Modern upload page with drag-and-drop, file validation (`.nii.gz` only), loading spinner during inference.
+
+#### [NEW] [result.html](file:///d:/Brain_Tumor_Segmentation/App/templates/result.html)
+
+Results page showing:
+- Original MRI slice (middle axial)
+- 3 segmentation channels side-by-side (TC, WT, ET)
+- Overlay visualization
+- "Upload Another" button
+
+---
+
+### Task Tracking
+
+#### [NEW] [task.md](file:///C:/Users/Vaibhav%20narwade/.gemini/antigravity/brain/9b6e3754-e0f5-4ebe-9a22-95d4ef23259e/task.md)
+
+---
+
+## Verification Plan
+
+### Automated Tests
+- Run `python app.py` and confirm the server starts without errors on `http://127.0.0.1:5000`.
+- Use the browser tool to navigate to `http://127.0.0.1:5000` and verify the upload page renders correctly.
+
+### Manual Verification
+1. Start the server: `cd d:\Brain_Tumor_Segmentation\App && python app.py`
+2. Open `http://127.0.0.1:5000` in browser
+3. Upload a `.nii.gz` brain MRI file (4-channel, BraTS format)
+4. Verify that the result page shows segmentation visualizations
+5. (You will need to provide a test `.nii.gz` file to fully test the inference end-to-end)

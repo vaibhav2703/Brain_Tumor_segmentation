@@ -11,4 +11,5 @@ node_modules/
 .env
 
 .ipynb_checkpoints
-__pycache__
+__pycache__.DS_Store
+**/.DS_Store
